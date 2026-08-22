@@ -25,11 +25,12 @@ class SSOUserFix(Job):
             x.user = real_user
             x.save()
 
-        nonce_user.delete()
-
         self.logger.success(f"Updated SSO login for {real_user.username}", extra={"object": real_user})
 
-
+        nonce_user.delete()
+        self.logger.info(
+            f"Deleted user {nonce_user.username}", extra={"object": nonce_user}
+        )
 
     def run(self):
         self.logger.info("Searching for users")
@@ -38,7 +39,6 @@ class SSOUserFix(Job):
 
         for user in duplicate_users:
             self.deduplicate(user)
-
 
 
 register_jobs(SSOUserFix)
