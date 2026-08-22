@@ -22,8 +22,8 @@ class SSOUserFix(Job):
         social_auth = nonce_user.social_auth.all()
 
         for x in social_auth:
-            s.user = real_user
-            s.save()
+            x.user = real_user
+            x.save()
 
         nonce_user.delete()
 
