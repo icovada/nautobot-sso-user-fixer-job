@@ -34,7 +34,7 @@ class SSOUserFix(Job):
     def run(self):
         self.logger.info("Searching for users")
 
-        duplicate_users = User.objects.filter(username__regex=".*@.*\\..*[0-9a-f]{16}")
+        duplicate_users = User.objects.filter(username__regex=".+[0-9a-f]{16}")
 
         for user in duplicate_users:
             self.deduplicate(user)
