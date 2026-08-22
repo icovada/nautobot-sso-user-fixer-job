@@ -3,7 +3,15 @@ from nautobot.users.models import User
 
 class SSOUserFix(Job):
     class Meta:
-        name = "Associate local users with SSO users in case of duplicates"
+        name = "Deduplicate SSO users"
+        has_sensitive_variables = False
+        description = '''
+            When an SSO users logs in and there's already a local user with the
+            same identity, a second user is created with a 16-character nonce.
+
+            This job deletes the new user and re-associates the SSO identity
+            to the correct username
+        '''
 
     def deduplicate(self, nonce_user: User):
         try:
