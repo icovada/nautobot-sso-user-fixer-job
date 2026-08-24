@@ -49,6 +49,7 @@ class SSOUserFix(Job):
                 # This will result in the user being deleted while the job is running
                 # The worker will not be able to insert JobLogEntries or update the JobResult and will crash.
                 self.fail("Job launched by a user who must be migrated. Launch this job as a local user.")
+                return
 
         for user in duplicate_users:
             self.deduplicate(user)
