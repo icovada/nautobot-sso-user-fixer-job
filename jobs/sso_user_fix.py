@@ -37,6 +37,19 @@ class SSOUserFix(Job):
 
         duplicate_users = User.objects.filter(username__regex=".+[0-9a-f]{16}")
 
+        # Assert user who launched the job isn't among the users to be migrated
+        if self.user in duplicate_users:
+            try:
+                real_user = User.objects.get(username=self.user.username[:-16])
+            except User.DoesNotExist:
+                # The user running this job isn't to be migrated but happens to match the filter
+                continue
+            else:
+                # The user running this job will be migrated.
+                # This will result in the user being deleted while the job is running
+                # The worker will not be able to insert JobLogEntries or update the JobResult and will crash.
+                self.fail("Job launched by a user who must be migrated. Launch this job as a local user.")
+
         for user in duplicate_users:
             self.deduplicate(user)
 
