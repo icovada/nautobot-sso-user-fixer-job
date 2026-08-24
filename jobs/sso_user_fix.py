@@ -43,7 +43,7 @@ class SSOUserFix(Job):
                 real_user = User.objects.get(username=self.user.username[:-16])
             except User.DoesNotExist:
                 # The user running this job isn't to be migrated but happens to match the filter
-                continue
+                pass
             else:
                 # The user running this job will be migrated.
                 # This will result in the user being deleted while the job is running
